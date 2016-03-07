@@ -9,7 +9,6 @@ var x = 0
 var y = 0
 
 func _ready():
-	print("!!!")
 	randomize()
 	x = get_node("../").world_to_map(get_pos()).x
 	y = get_node("../").world_to_map(get_pos()).y
@@ -26,6 +25,7 @@ func _ready():
 		if dir == 3:
 			y+=-1
 		
-		get_node("../").set_cell(x,y,1)
+		get_node("../").set_cell(x,y,3)
+		get_node("../../upps").set_cell(x,y,-1)
 		
 		count+=1
