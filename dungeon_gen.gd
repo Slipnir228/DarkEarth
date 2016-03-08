@@ -26,6 +26,7 @@ func _ready():
 			y+=-1
 		
 		get_node("../").set_cell(x,y,3)
+		get_node("../../gui/map").set_cell(x,y,3)
 		get_node("../../upps").set_cell(x,y,-1)
 		
 		count+=1

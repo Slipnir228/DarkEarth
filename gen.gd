@@ -16,9 +16,33 @@ var dun_array = []
 
 onready var upps = get_node("../upps")
 onready var down = get_node("../down")
+onready var map = get_node("../gui/map")
+onready var map_gg = get_node("../gui/gg")
+onready var gg = get_node("../gg")
 
-func _ready():
+var map_show = false
+var key_pressed_m = false
+
+func _process(delta):
+	if map_show == false:
+		map.hide()
+	else:
+		map.show()
 	
+	if Input.is_action_pressed("map_toggle") and map_show == false and key_pressed_m == false:
+		map_show = true
+		key_pressed_m = true
+	if Input.is_action_pressed("map_toggle") and map_show == true and key_pressed_m == false:
+		map_show = false
+		key_pressed_m = true
+	if not Input.is_action_pressed("map_toggle"):
+		key_pressed_m = false
+	
+	map.set_pos(world_to_map(-gg.get_pos())+Vector2(0,72))
+	
+	
+func _ready():
+	set_process(true)
 	randomize()
 	gen()
 
@@ -26,6 +50,8 @@ func fill():
 	for x in range(-128,384):
 		for y in range(-256,256):
 			upps.set_cell(x,y,0)
+			
+			
 
 func gen():
 	fill()
@@ -41,6 +67,7 @@ func gen():
 		
 		x+=1
 		set_cell(x,y,3)
+		map.set_cell(x,y,3)
 		upps.set_cell(x,y,-1)
 		
 		dir = randi()%4
@@ -53,6 +80,7 @@ func gen():
 		if dir == 3:
 			y+=-1
 		set_cell(x,y,3)
+		map.set_cell(x,y,3)
 		upps.set_cell(x,y,-1)
 	walls()
 	
@@ -62,13 +90,26 @@ func walls():
 			if upps.get_cell(x,y) == 0:
 				if upps.get_cell(x,y-1) == -1:
 					upps.set_cell(x,y-1,1)
+				if upps.get_cell(x+1,y) == -1 or upps.get_cell(x+1,y) == 1:
+					upps.set_cell(x,y,4)
+				if upps.get_cell(x-1,y) == -1 or upps.get_cell(x-1,y) == 1:
+					upps.set_cell(x,y,4)
 				if upps.get_cell(x,y+1) == -1:
 					if upps.get_cell(x+1,y) == -1 and upps.get_cell(x-1,y) == -1 and down.get_cell(x+1,y) == -1 and down.get_cell(x-1,y) == -1:
 						set_cell(x,y,3)
 						down.set_cell(x,y,5)
 						upps.set_cell(x,y,-1)
 					else:
-						set_cell(x,y,3)
 						down.set_cell(x,y,2)
 						upps.set_cell(x,y,-1)
-				
+
+
+func destroy(x,y):
+	x = world_to_map(Vector2(x,y)).x
+	y = world_to_map(Vector2(x,y)).y
+	
+	set_cell(x,y,3)
+	upps.set_cell(x,y,-1)
+	down.set_cell(x,y,-1)
+	
+	walls()
