@@ -16,4 +16,9 @@ func _process(delta):
 		set_follow_smoothing(1)
 	
 	if Input.is_action_pressed("mouse_click"):
-		get_node("../ground").destroy(mousepos.x,mousepos.y)
+		var x = mousepos.x
+		var y = mousepos.y
+		var g = get_node("../ground")
+		x = g.world_to_map(Vector2(x, y)).x
+		y = g.world_to_map(Vector2(x, y)).y
+		g.destroy(x,y)
