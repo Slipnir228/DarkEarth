@@ -14,6 +14,16 @@ var dungeons_max = 8
 
 var dun_array = []
 
+var id_side = 4
+var id_pass = 3
+var id_border_up = 1
+var id_border_down = 2
+		
+#x1=-128
+#x2=384
+#y1=-256
+#y2=256
+
 onready var upps = get_node("../upps")
 onready var down = get_node("../down")
 onready var map = get_node("../gui/map")
@@ -66,8 +76,8 @@ func gen():
 	while x <= x_max:
 		
 		x+=1
-		set_cell(x,y,3)
-		map.set_cell(x,y,3)
+		set_cell(x,y,id_pass)
+		map.set_cell(x,y,id_pass)
 		upps.set_cell(x,y,-1)
 		
 		dir = randi()%4
@@ -79,37 +89,47 @@ func gen():
 			y+=1
 		if dir == 3:
 			y+=-1
-		set_cell(x,y,3)
-		map.set_cell(x,y,3)
+		set_cell(x,y,id_pass)
+		map.set_cell(x,y,id_pass)
 		upps.set_cell(x,y,-1)
-	walls()
-	
-func walls():
-	for x in range(-128,384):
-		for y in range(-256,256):
-			if upps.get_cell(x,y) == 0:
+	walls(-128, 384, -256, 256)
+
+
+
+func walls(x1,x2,y1,y2):
+	for x in range(x1,x2):
+		for y in range(y1,y2):
+			
+			
+			if upps.get_cell(x,y) == 0 or upps.get_cell(x,y) == id_side: 
 				if upps.get_cell(x,y-1) == -1:
-					upps.set_cell(x,y-1,1)
-				if upps.get_cell(x+1,y) == -1 or upps.get_cell(x+1,y) == 1:
-					upps.set_cell(x,y,4)
-				if upps.get_cell(x-1,y) == -1 or upps.get_cell(x-1,y) == 1:
-					upps.set_cell(x,y,4)
+					upps.set_cell(x,y-1, id_border_up)
+				
+					
+			if upps.get_cell(x,y) == 0 or upps.get_cell(x,y) == id_side: 
+				if upps.get_cell(x,y+1) == -1: 
+					down.set_cell(x,y,id_border_down)
+					upps.set_cell(x,y,-2)
+					
+	
+			if upps.get_cell(x,y) == 0:
+				if (upps.get_cell(x+1,y) == -1 or 
+				upps.get_cell(x-1,y) == -1):
+					if (upps.get_cell(x,y+1) != -1 and
+					upps.get_cell(x,y-1) != -1):
+						upps.set_cell(x,y, id_side)
+			
+			if upps.get_cell(x,y) == id_border_up:
 				if upps.get_cell(x,y+1) == -1:
-					if upps.get_cell(x+1,y) == -1 and upps.get_cell(x-1,y) == -1 and down.get_cell(x+1,y) == -1 and down.get_cell(x-1,y) == -1:
-						set_cell(x,y,3)
-						down.set_cell(x,y,5)
-						upps.set_cell(x,y,-1)
-					else:
-						down.set_cell(x,y,2)
-						upps.set_cell(x,y,-1)
+					destroy(x,y)
+			
+			if down.get_cell(x,y) == id_border_down:
+				if upps.get_cell(x,y-1) == -1:
+					upps.set_cell(x,y-1,id_border_up)
 
 
 func destroy(x,y):
-	x = world_to_map(Vector2(x,y)).x
-	y = world_to_map(Vector2(x,y)).y
-	
 	set_cell(x,y,3)
 	upps.set_cell(x,y,-1)
 	down.set_cell(x,y,-1)
-	
-	walls()
+	walls(x-10,x+10,y-10,y+10)
