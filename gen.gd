@@ -27,7 +27,6 @@ var id_border_down = 2
 onready var upps = get_node("../upps")
 onready var down = get_node("../down")
 onready var map = get_node("../gui/map")
-onready var map_gg = get_node("../gui/gg")
 onready var gg = get_node("../gg")
 
 var map_show = false
@@ -48,7 +47,7 @@ func _process(delta):
 	if not Input.is_action_pressed("map_toggle"):
 		key_pressed_m = false
 	
-	map.set_pos(world_to_map(-gg.get_pos())+Vector2(0,72))
+	map.set_pos(-gg.get_pos()*0.1+Vector2(128,72))
 	
 	
 func _ready():
@@ -111,13 +110,6 @@ func walls(x1,x2,y1,y2):
 					down.set_cell(x,y,id_border_down)
 					upps.set_cell(x,y,-2)
 					
-	
-			if upps.get_cell(x,y) == 0:
-				if (upps.get_cell(x+1,y) == -1 or 
-				upps.get_cell(x-1,y) == -1):
-					if (upps.get_cell(x,y+1) != -1 and
-					upps.get_cell(x,y-1) != -1):
-						upps.set_cell(x,y, id_side)
 			
 			if upps.get_cell(x,y) == id_border_up:
 				if upps.get_cell(x,y+1) == -1:
@@ -126,6 +118,11 @@ func walls(x1,x2,y1,y2):
 			if down.get_cell(x,y) == id_border_down:
 				if upps.get_cell(x,y-1) == -1:
 					upps.set_cell(x,y-1,id_border_up)
+			
+			if upps.get_cell(x,y) == 0:
+				if (upps.get_cell(x+1,y) == -1 or upps.get_cell(x-1,y) == -1):
+					if (upps.get_cell(x,y+1) != -1 and upps.get_cell(x,y-1) != -1):
+						upps.set_cell(x,y, id_side)
 
 
 func destroy(x,y):
