@@ -51,7 +51,7 @@ func _ready():
 
 
 func on_item(name):
-	get_parent().popup("Press 'E' to pickup "+name,get_pos()-Vector2(32,16))
+	get_parent().popup("Press 'E' to pickup "+name,get_pos()-Vector2(48,16))
 	
 func left_item():
 	get_parent().hide_popup()
