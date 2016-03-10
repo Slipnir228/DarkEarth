@@ -98,31 +98,29 @@ func gen():
 func walls(x1,x2,y1,y2):
 	for x in range(x1,x2):
 		for y in range(y1,y2):
-			
-			
-			if upps.get_cell(x,y) == 0 or upps.get_cell(x,y) == id_side: 
-				if upps.get_cell(x,y-1) == -1:
-					upps.set_cell(x,y-1, id_border_up)
-				
-					
-			if upps.get_cell(x,y) == 0 or upps.get_cell(x,y) == id_side: 
-				if upps.get_cell(x,y+1) == -1: 
-					down.set_cell(x,y,id_border_down)
-					upps.set_cell(x,y,-2)
-					
+			if upps.get_cell(x,y) == -1:
+				if upps.get_cell(x, y + 1) in [0, id_side]:
+					if not upps.get_cell(x,y - 1) in [id_border_up]:
+						upps.set_cell(x, y, id_border_up)
 			
 			if upps.get_cell(x,y) == id_border_up:
 				if upps.get_cell(x,y+1) == -1:
 					destroy(x,y)
+					
+			if upps.get_cell(x,y) in [0, id_side]:
+				if upps.get_cell(x, y + 1) in [-1, id_border_up]:
+					down.set_cell(x,y,id_border_down)
+					upps.set_cell(x,y,-2)
 			
 			if down.get_cell(x,y) == id_border_down:
 				if upps.get_cell(x,y-1) == -1:
 					upps.set_cell(x,y-1,id_border_up)
 			
 			if upps.get_cell(x,y) == 0:
-				if (upps.get_cell(x+1,y) == -1 or upps.get_cell(x-1,y) == -1):
-					if (upps.get_cell(x,y+1) != -1 and upps.get_cell(x,y-1) != -1):
-						upps.set_cell(x,y, id_side)
+				if upps.get_cell(x+1,y) in [-1,id_border_up] or upps.get_cell(x-1,y) in [-1,id_border_up]:
+					if upps.get_cell(x,y + 1) in [0, id_side] or down.get_cell(x,y + 1) == id_border_down:
+						if upps.get_cell(x,y - 1) in [0, id_side, id_border_up]: #?
+							upps.set_cell(x, y, id_side)
 
 
 func destroy(x,y):
