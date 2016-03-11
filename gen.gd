@@ -105,12 +105,16 @@ func walls(x1,x2,y1,y2):
 			
 			if upps.get_cell(x,y) == id_border_up:
 				if upps.get_cell(x,y+1) == -1:
-					destroy(x,y)
+					upps.set_cell(x,y,-1)
 					
 			if upps.get_cell(x,y) in [0, id_side]:
 				if upps.get_cell(x, y + 1) in [-1, id_border_up]:
-					down.set_cell(x,y,id_border_down)
-					upps.set_cell(x,y,-2)
+					down.set_cell(x,y,5)
+					upps.set_cell(x,y,id_border_down)
+			
+			if down.get_cell(x,y) == 5:
+				if upps.get_cell(x,y-1) == -1:
+					upps.set_cell(x,y-1,id_border_up)
 			
 			if down.get_cell(x,y) == id_border_down:
 				if upps.get_cell(x,y-1) == -1:
