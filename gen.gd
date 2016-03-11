@@ -131,4 +131,4 @@ func destroy(x,y):
 	set_cell(x,y,3)
 	upps.set_cell(x,y,-1)
 	down.set_cell(x,y,-1)
-	walls(x-10,x+10,y-10,y+10)
+	walls(x-4,x+4,y-4,y+4)
