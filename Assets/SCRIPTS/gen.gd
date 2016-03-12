@@ -68,7 +68,7 @@ func gen():
 	y = 0
 	for dungeons in range(0,dungeons_max):
 		dun_array.append(randi()%x_max)
-		dungeon_gen = load("res://dungeongen.scn").instance()
+		dungeon_gen = load("res://Assets/SCENES/dungeongen.scn").instance()
 		dungeon_gen.set_pos(map_to_world(Vector2(dun_array[dungeons],0)))
 		add_child(dungeon_gen)
 	print(dun_array)
